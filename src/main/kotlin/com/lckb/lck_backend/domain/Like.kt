@@ -1,6 +1,6 @@
 package com.lckb.lck_backend.domain
 
-import javax.persistence.*
+import jakarta.persistence.*
 
 @Entity
 @Table(name = "likes")
