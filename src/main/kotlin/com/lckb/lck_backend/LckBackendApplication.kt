@@ -12,6 +12,24 @@ import org.springframework.boot.runApplication
 // util/           : 유틸리티 클래스
 // exception/      : 커스텀 예외
 
+//
+// Spring Boot (Kotlin) vs NestJS (TypeScript) 어노테이션 비교
+// @PostMapping()     → @Post()
+// @GetMapping()      → @Get()
+// @PutMapping()      → @Put()
+// @DeleteMapping()   → @Delete()
+// @RequestBody       → @Body()
+// @RequestParam      → @Query()
+// @PathVariable      → @Param()
+// @RestController    → @Controller()
+// @RequestMapping    → @Controller() + 경로
+// @Service           → @Injectable()
+// @Repository        → @EntityRepository()
+// @Entity            → @Entity()
+// @Transactional     → @Transaction()
+// @Configuration     → @Module()
+// @Bean              → providers: []
+
 
 @SpringBootApplication
 class LckBackendApplication

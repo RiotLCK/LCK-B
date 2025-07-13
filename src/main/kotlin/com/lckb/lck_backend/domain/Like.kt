@@ -4,7 +4,7 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "likes")
-data class Like(
+class Like(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
@@ -15,4 +15,11 @@ data class Like(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     val user: User
-) 
+) {
+    // JPA를 위한 기본 생성자
+    constructor() : this(
+        id = 0,
+        post = Post(),
+        user = User()
+    )
+} 

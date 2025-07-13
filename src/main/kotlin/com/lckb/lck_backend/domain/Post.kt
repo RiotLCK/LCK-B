@@ -5,7 +5,7 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "posts")
-data class Post(
+class Post(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
@@ -27,4 +27,15 @@ data class Post(
 
     @Column(name = "updated_at")
     val updatedAt: LocalDateTime = LocalDateTime.now()
-) 
+) {
+    // JPA를 위한 기본 생성자
+    constructor() : this(
+        id = 0,
+        user = User(),
+        title = "",
+        content = "",
+        category = "",
+        createdAt = LocalDateTime.now(),
+        updatedAt = LocalDateTime.now()
+    )
+} 

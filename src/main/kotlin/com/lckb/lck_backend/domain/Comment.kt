@@ -5,7 +5,7 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "comments")
-data class Comment(
+class Comment(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
@@ -22,4 +22,13 @@ data class Comment(
 
     @Column(name = "created_at")
     val createdAt: LocalDateTime = LocalDateTime.now()
-) 
+) {
+    // JPA를 위한 기본 생성자
+    constructor() : this(
+        id = 0,
+        post = Post(),
+        user = User(),
+        content = "",
+        createdAt = LocalDateTime.now()
+    )
+} 

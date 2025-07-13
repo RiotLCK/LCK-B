@@ -5,7 +5,7 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "users")
-data class User(
+class User(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
@@ -26,4 +26,15 @@ data class User(
 
     @Column(nullable = false, length = 50)
     val type: String
-) 
+) {
+    // JPA를 위한 기본 생성자
+    constructor() : this(
+        id = 0,
+        email = "",
+        password = "",
+        nickname = "",
+        profileImg = null,
+        createdAt = LocalDateTime.now(),
+        type = ""
+    )
+} 

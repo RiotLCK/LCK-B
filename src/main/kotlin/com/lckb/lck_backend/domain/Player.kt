@@ -4,7 +4,7 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "players")
-data class Player(
+class Player(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
@@ -22,4 +22,14 @@ data class Player(
 
     @Column(name = "image_url", columnDefinition = "TEXT")
     val imageUrl: String
-) 
+) {
+    // JPA를 위한 기본 생성자
+    constructor() : this(
+        id = 0,
+        name = "",
+        position = "",
+        team = "",
+        description = "",
+        imageUrl = ""
+    )
+} 
