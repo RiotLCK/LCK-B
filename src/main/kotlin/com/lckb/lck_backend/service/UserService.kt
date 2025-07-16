@@ -1,14 +1,9 @@
 package com.lckb.lck_backend.service
 
 import com.lckb.lck_backend.domain.User
-import com.lckb.lck_backend.domain.dto.SignUpRequest
-import com.lckb.lck_backend.domain.dto.SignUpResponse
-import com.lckb.lck_backend.domain.dto.LoginRequest
-import com.lckb.lck_backend.domain.dto.LoginResponse
-import com.lckb.lck_backend.domain.dto.UserInfo
-import com.lckb.lck_backend.domain.dto.TokenRefreshRequest
-import com.lckb.lck_backend.domain.dto.TokenRefreshResponse
+import com.lckb.lck_backend.domain.dto.*
 import com.lckb.lck_backend.repository.UserRepository
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -20,6 +15,7 @@ class UserService(
     private val jwtService: JwtService
 ) {
 
+    // 회원가입 처리
     @Transactional
     fun signUp(request: SignUpRequest): SignUpResponse {
         // 이메일 중복 체크
@@ -52,6 +48,7 @@ class UserService(
         )
     }
 
+    // 로그인 처리 및 JWT 발급
     fun login(request: LoginRequest): LoginResponse {
         // 이메일로 사용자 찾기
         val user = userRepository.findByEmail(request.email)
@@ -79,6 +76,7 @@ class UserService(
         )
     }
 
+    // 토큰 갱신 처리
     fun refreshToken(request: TokenRefreshRequest): TokenRefreshResponse {
         val refreshToken = request.refreshToken
         
@@ -106,15 +104,34 @@ class UserService(
         )
     }
 
+    // 이메일로 사용자 조회
     fun findByEmail(email: String): User? {
         return userRepository.findByEmail(email)
     }
 
+    // 이메일 존재 여부 체크
     fun existsByEmail(email: String): Boolean {
         return userRepository.findByEmail(email) != null
     }
 
+    // 닉네임 존재 여부 체크
     fun existsByNickname(nickname: String): Boolean {
         return userRepository.findByNickname(nickname) != null
     }
+
+    // Spring Security에서 사용자를 조회할 때 호출
+    fun loadUserByEmail(email: String): User {
+        return userRepository.findByEmail(email)
+            ?: throw UsernameNotFoundException("해당 이메일로 등록된 사용자를 찾을 수 없습니다.")
+    }
+
+    // 로그인한 사용자의 내 정보 조회
+    fun getMyInfo(user: User): UserInfo {
+        return UserInfo(
+            id = user.id,
+            email = user.email,
+            nickname = user.nickname
+        )
+    }
+
 } 

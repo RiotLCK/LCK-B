@@ -1,10 +1,11 @@
 package com.lckb.lck_backend.controller
 
-import com.lckb.lck_backend.domain.dto.post.CreatePostRequest
-import com.lckb.lck_backend.domain.dto.post.UpdatePostRequest
-import com.lckb.lck_backend.domain.dto.post.PostResponse
 import com.lckb.lck_backend.domain.User
+import com.lckb.lck_backend.domain.dto.post.CreatePostRequest
+import com.lckb.lck_backend.domain.dto.post.PostResponse
+import com.lckb.lck_backend.domain.dto.post.UpdatePostRequest
 import com.lckb.lck_backend.service.PostService
+import com.lckb.lck_backend.config.CustomUserDetails
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
@@ -18,8 +19,9 @@ class PostController(
     @PostMapping
     fun createPost(
         @RequestBody request: CreatePostRequest,
-        @AuthenticationPrincipal user: User // Spring Security 인증된 유저
+        @AuthenticationPrincipal userDetails: CustomUserDetails
     ): PostResponse {
+        val user: User = userDetails.user
         val post = postService.createPost(request, user)
         return PostResponse.from(post)
     }
@@ -41,8 +43,9 @@ class PostController(
     fun updatePost(
         @PathVariable id: Long,
         @RequestBody request: UpdatePostRequest,
-        @AuthenticationPrincipal user: User
+        @AuthenticationPrincipal userDetails: CustomUserDetails
     ): PostResponse {
+        val user: User = userDetails.user
         val updatedPost = postService.updatePost(id, request, user)
         return PostResponse.from(updatedPost)
     }
@@ -51,8 +54,9 @@ class PostController(
     @DeleteMapping("/{id}")
     fun deletePost(
         @PathVariable id: Long,
-        @AuthenticationPrincipal user: User
+        @AuthenticationPrincipal userDetails: CustomUserDetails
     ) {
+        val user: User = userDetails.user
         postService.deletePost(id, user)
     }
 }

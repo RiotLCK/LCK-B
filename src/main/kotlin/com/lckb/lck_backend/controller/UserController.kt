@@ -1,14 +1,14 @@
 package com.lckb.lck_backend.controller
 
-import com.lckb.lck_backend.domain.dto.SignUpRequest
-import com.lckb.lck_backend.domain.dto.SignUpResponse
-import com.lckb.lck_backend.domain.dto.LoginRequest
-import com.lckb.lck_backend.domain.dto.LoginResponse
-import com.lckb.lck_backend.domain.dto.TokenRefreshRequest
-import com.lckb.lck_backend.domain.dto.TokenRefreshResponse
+
+import com.lckb.lck_backend.domain.User
+import com.lckb.lck_backend.domain.dto.*
 import com.lckb.lck_backend.service.UserService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+
+
 
 @RestController
 @RequestMapping("/api/users")
@@ -16,6 +16,7 @@ class UserController(
     private val userService: UserService
 ) {
 
+    // 회원가입 API
     @PostMapping("/signup")
     fun signUp(@RequestBody request: SignUpRequest): ResponseEntity<SignUpResponse> {
         return try {
@@ -31,6 +32,7 @@ class UserController(
         }
     }
 
+    // 로그인 API
     @PostMapping("/login")
     fun login(@RequestBody request: LoginRequest): ResponseEntity<LoginResponse> {
         return try {
@@ -46,6 +48,7 @@ class UserController(
         }
     }
 
+    // 토큰 갱신 API
     @PostMapping("/refresh")
     fun refreshToken(@RequestBody request: TokenRefreshRequest): ResponseEntity<TokenRefreshResponse> {
         return try {
@@ -61,6 +64,7 @@ class UserController(
         }
     }
 
+    // 이메일 중복 체크 API
     @GetMapping("/check-email")
     fun checkEmail(@RequestParam email: String): ResponseEntity<Map<String, Any>> {
         val exists = userService.existsByEmail(email)
@@ -71,6 +75,7 @@ class UserController(
         ))
     }
 
+    // 닉네임 중복 체크 API
     @GetMapping("/check-nickname")
     fun checkNickname(@RequestParam nickname: String): ResponseEntity<Map<String, Any>> {
         val exists = userService.existsByNickname(nickname)
@@ -80,4 +85,16 @@ class UserController(
             "available" to !exists
         ))
     }
+
+    // 내 정보 조회 API (인증된 사용자 정보 반환)
+    @GetMapping("/me")
+    fun getCurrentUser(
+        @AuthenticationPrincipal(expression = "user") user: User
+    ): ResponseEntity<UserInfo> {
+        val userInfo = userService.getMyInfo(user)
+        return ResponseEntity.ok(userInfo)
+    }
+
+
+
 } 

@@ -17,7 +17,7 @@ class CommentController(
     @PostMapping
     fun createComment(
         @RequestBody request: CreateCommentRequest,
-        @AuthenticationPrincipal user: User
+        @AuthenticationPrincipal(expression = "user") user: User
     ): CommentResponse {
         val comment = commentService.createComment(request, user)
         return CommentResponse.from(comment, likeCount = 0, likedByCurrentUser = false)
@@ -27,7 +27,7 @@ class CommentController(
     @GetMapping("/post/{postId}")
     fun getCommentsByPost(
         @PathVariable postId: Long,
-        @AuthenticationPrincipal user: User
+        @AuthenticationPrincipal(expression = "user") user: User
     ): List<CommentResponse> {
         return commentService.getCommentResponsesByPost(postId, user)
     }
@@ -36,7 +36,7 @@ class CommentController(
     @DeleteMapping("/{id}")
     fun deleteComment(
         @PathVariable id: Long,
-        @AuthenticationPrincipal user: User
+        @AuthenticationPrincipal(expression = "user") user: User
     ) {
         commentService.deleteComment(id, user)
     }
