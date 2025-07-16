@@ -27,10 +27,11 @@ class CommentController(
     @GetMapping("/post/{postId}")
     fun getCommentsByPost(
         @PathVariable postId: Long,
-        @AuthenticationPrincipal(expression = "user") user: User
+        @AuthenticationPrincipal(expression = "user") user: User?
     ): List<CommentResponse> {
         return commentService.getCommentResponsesByPost(postId, user)
     }
+
 
     // 댓글 삭제
     @DeleteMapping("/{id}")

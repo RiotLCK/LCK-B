@@ -13,6 +13,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import org.springframework.http.HttpMethod
+
 
 @Configuration
 @EnableWebSecurity
@@ -39,7 +41,15 @@ class SecurityConfig {
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
             .authorizeHttpRequests { auth ->
                 auth
+                    // 회원가입, 로그인 등 공개 API
                     .requestMatchers("/api/users/signup", "/api/users/login", "/api/users/check-email", "/api/users/check-nickname", "/api/test/public").permitAll()
+                    // 게시글 조회(GET) 및 댓글 조회(GET)은 모두 허용
+                    .requestMatchers(HttpMethod.GET, "/api/posts", "/api/posts/*", "/api/comments", "/api/comments/*", "/api/posts/*/comments").permitAll()
+                    // 게시글 생성(POST), 수정(PUT), 삭제(DELETE)은 인증 필요
+                    .requestMatchers(HttpMethod.POST, "/api/posts", "/api/comments").authenticated()
+                    .requestMatchers(HttpMethod.PUT, "/api/posts/*", "/api/comments/*").authenticated()
+                    .requestMatchers(HttpMethod.DELETE, "/api/posts/*", "/api/comments/*").authenticated()
+                    // 기타 모든 요청은 인증 필요
                     .anyRequest().authenticated()
             }
         return http.build()

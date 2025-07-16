@@ -39,7 +39,7 @@ class CommentService(
     }
 
     // 댓글 목록 (응답 DTO 반환 + 좋아요 정보 포함)
-    fun getCommentResponsesByPost(postId: Long, user: User): List<CommentResponse> {
+    fun getCommentResponsesByPost(postId: Long, user: User?): List<CommentResponse> {
         val post = postRepository.findById(postId).orElseThrow {
             IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
         }
@@ -48,10 +48,15 @@ class CommentService(
 
         return comments.map { comment ->
             val likeCount = commentLikeService.countLikes(comment)
-            val likedByUser = commentLikeService.isLikedByUser(comment, user)
+            val likedByUser = if (user != null) {
+                commentLikeService.isLikedByUser(comment, user)
+            } else {
+                false // 비회원은 좋아요 누른 상태일 수 없으므로 false
+            }
             CommentResponse.from(comment, likeCount, likedByUser)
         }
     }
+
 
     // 댓글 삭제
     @Transactional
