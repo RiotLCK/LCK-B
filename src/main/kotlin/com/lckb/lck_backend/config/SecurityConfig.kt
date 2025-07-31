@@ -1,6 +1,7 @@
 package com.lckb.lck_backend.config
 
 import com.lckb.lck_backend.service.JwtService
+import com.lckb.lck_backend.repository.UserRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -18,7 +19,9 @@ import org.springframework.http.HttpMethod
 
 @Configuration
 @EnableWebSecurity
-class SecurityConfig {
+class SecurityConfig(
+    private val userRepository: UserRepository
+) {
 
     @Bean
     fun passwordEncoder(): PasswordEncoder {
@@ -27,7 +30,7 @@ class SecurityConfig {
 
     @Bean
     fun jwtAuthenticationFilter(jwtService: JwtService): JwtAuthenticationFilter {
-        return JwtAuthenticationFilter(jwtService)
+        return JwtAuthenticationFilter(jwtService, userRepository)
     }
 
     @Bean

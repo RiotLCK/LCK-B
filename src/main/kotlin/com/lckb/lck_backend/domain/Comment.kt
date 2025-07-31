@@ -10,7 +10,7 @@ class Comment(
     val id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "post_id", nullable = false)
     val post: Post,
 
     @ManyToOne(fetch = FetchType.LAZY)

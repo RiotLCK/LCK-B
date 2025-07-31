@@ -8,12 +8,16 @@ import com.lckb.lck_backend.service.PostService
 import com.lckb.lck_backend.config.CustomUserDetails
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
 
 @RestController
 @RequestMapping("/api/posts")
 class PostController(
     private val postService: PostService
 ) {
+    private val logger: Logger = LoggerFactory.getLogger(PostController::class.java)
 
     // 게시글 생성
     @PostMapping
@@ -22,7 +26,11 @@ class PostController(
         @AuthenticationPrincipal userDetails: CustomUserDetails
     ): PostResponse {
         val user: User = userDetails.user
+        logger.info("게시글 생성 요청: 사용자={}, 제목={}, 카테고리={}", user.nickname, request.title, request.category)
+
         val post = postService.createPost(request, user)
+        logger.info("게시글 생성 완료: postId={}, 작성자={}", post.id, post.user.nickname)
+
         return PostResponse.from(post)
     }
 
@@ -59,4 +67,11 @@ class PostController(
         val user: User = userDetails.user
         postService.deletePost(id, user)
     }
+
+    // 게시글 카테고리별
+    @GetMapping("/category/{category}")
+    fun getPostsByCategory(@PathVariable category: String): List<PostResponse> {
+        return postService.getPostsByCategory(category).map { PostResponse.from(it) }
+    }
+
 }
